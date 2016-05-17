@@ -34,9 +34,11 @@ deck.forEach(function(card) {
   deckValues[card] = val
 });
 
+
+//GAME START STATE
 function start() {
   turn = "P1";
-  gameOutcome = "playing"
+  gameOutcome = "playing";
   playingDeck = _.shuffle(deck);
   for(var i = 0; i < 4; i++) {
     if ( i % 2 === 0) {
@@ -44,34 +46,68 @@ function start() {
     } else {
       dealer.push(playingDeck.shift());
     }
-  }
-  if(sumUp(player) === 21) {
-    return gameOutcome = "BlackJack! " + turn + " Wins$$";
-  }
-  if(sumUp(dealer) === 21) {
-    return "Dealer has BlackJack House Wins";
-    }
-}
+  };
 
+
+};
+
+
+// ADD UP VALUES
 function sumUp(arr) {
   var total = 0;
   arr.forEach(function(singleCard) {
-    console.log(singleCard);
     total += deckValues[singleCard];
   });
   return total;
 }
+//CHECK FOR BUST
+function checkBust(pd) {
+  return sumUp(pd) > 21;
+  // if(sumUp(pd) > 21) {
+  // gameOutcome = "Bust";
+  // clearHand();
+  // }
+}
 
-function checkBust() {
-  if(total > 21) {
-    return gameOutcome = "Bust";
+//HIT
+function hit(hands) {
+  hands.push(playingDeck.shift());
+  // checkBust(hands);
+}
+
+// STAY
+function stay() {
+  while(sumUp(dealer) < 17) {
+    hit(dealer);
+  }
+  // checkBust(dealer);
+  // gameOutcome = "game over";
+  checkWin();
+}
+
+// check for winner
+function checkWin() {
+  if (checkBust(player)) {
+    gameOutcome = "Dealer";
+  } else if (checkBust(dealer)) {
+    gameOutcome = "Player";
   }
 }
 
-
-function hit(hands) {
-  hands.push(playingDeck.shift());
+// CLEAR PLAYER HAND
+function clearHand() {
+  player1.hand = [];
+  dealer.hand = [];
 }
+
+// HELPER....
+function renderGame() {;
+console.log("Player hand: " + player);
+console.log("Dealer hand: " + dealer);
+console.log("Turn: " + turn);
+console.log("Game Outcome: " + gameOutcome);
+}
+
 
 
 
