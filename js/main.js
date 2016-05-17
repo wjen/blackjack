@@ -5,19 +5,78 @@ var deck = [
   'h02', 'h03', 'h04', 'h05', 'h06', 'h07', 'h08', 'h09', 'h10', 'hJ', 'hQ', 'hK', 'hA'
 ];
 
+var player1 = {
+              hand: [],
+              startChips: 100
+             };
 
-var player = [];
-var computer = [];
+var player  = player1.hand;
+
+var dealer = [];
+
 var playingDeck = null;
 
-function gameStart() {
+var wager;
+
+var deckValues = {};
+
+var gameOutcome;
+
+var turn;
+
+deck.forEach(function(card) {
+  var val = card.substring(1);
+  if (isNaN(parseInt(val))) {
+    val = (val === 'A') ? 11 : 10;
+  } else {
+    val = parseInt(val);
+  }
+  deckValues[card] = val
+});
+
+function start() {
+  turn = "P1";
+  gameOutcome = "playing"
   playingDeck = _.shuffle(deck);
   for(var i = 0; i < 4; i++) {
     if ( i % 2 === 0) {
-      player.push(playingDeck.shift());
+      player1.hand.push(playingDeck.shift());
     } else {
-      computer.push(playingDeck.shift());
+      dealer.push(playingDeck.shift());
     }
   }
+  if(sumUp(player) === 21) {
+    return gameOutcome = "BlackJack! " + turn + " Wins$$";
+  }
+  if(sumUp(dealer) === 21) {
+    return "Dealer has BlackJack House Wins";
+    }
 }
+
+function sumUp(arr) {
+  var total = 0;
+  arr.forEach(function(singleCard) {
+    console.log(singleCard);
+    total += deckValues[singleCard];
+  });
+  return total;
+}
+
+function checkBust() {
+  if(total > 21) {
+    return gameOutcome = "Bust";
+  }
+}
+
+
+function hit(hands) {
+  hands.push(playingDeck.shift());
+}
+
+
+
+
+
+
+
 
