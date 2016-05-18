@@ -7,7 +7,7 @@ var deck = [
 
 var player1 = {
               hand: [],
-              startChips: 100
+              chips: 100
               };
 
 var dealer = [];
@@ -22,16 +22,29 @@ var gameOutcome;
 
 var turn;
 
-deck.forEach(function(card) {
-  var val = card.substring(1);
-  if (isNaN(parseInt(val))) {
-    val = (val === 'A') ? 11 : 10;
-  } else {
-    val = parseInt(val);
-  }
-  deckValues[card] = val
-});
 
+// value of cards
+
+// deck.forEach(function(card) {
+//   var val = card.substring(1);
+//   if (isNaN(parseInt(val))) {
+//     val = (val === 'A') ? 1 : 10;
+//   }
+//    else {
+//     val = parseInt(val);
+//   }
+//   deckValues[card] = val;
+
+// });
+
+
+//check for 21
+// if (val === "A" && sumUp(player1.hand) > 21) {
+//       val = 1;
+//     }
+//     if (val === "A" && sumUp(dealer) > 21) {
+//       val = 1;
+//     }
 
 
 // GAME START
@@ -58,12 +71,13 @@ function deal() {
 
   // AUTOMATIC WINS
   if(
+    //PLAYER BLACKJACK
     ((sumUp(player1.hand) === 21 && sumUp(dealer) === 21) && (dealer[0] !== "A")) ||
-    ((sumUp(player1.hand) !== 21 && sumUp(dealer) === 21))                        ||
-    (sumUp(player1.hand) === 21)
+    //DEALER BLACKJACK
+    ((sumUp(player1.hand) !== 21 && sumUp(dealer) === 21))
     ) {
       checkWin();
-    }
+  }
 
 };
 
@@ -71,11 +85,32 @@ function deal() {
 // ADD UP VALUES
 function sumUp(arr) {
   var total = 0;
+
+  deck.forEach(function(card) {
+  var val = card.substring(1);
+  if (isNaN(parseInt(val))) {
+    val = (val === 'A') ? 1 : 10;
+  }
+   else {
+    val = parseInt(val);
+  }
+  deckValues[card] = val;
+
+  });
+
   arr.forEach(function(singleCard) {
     total += deckValues[singleCard];
   });
+  for(var i = 0; i < arr.length; i++) {
+    if  ((arr[i].indexOf("A") > -1) && (total < 11)) {
+      total += 10;
+    }
+  }
   return total;
 }
+
+
+
 //CHECK FOR BUST
 function checkBust(pd) {
   return (sumUp(pd) > 21);
@@ -99,7 +134,9 @@ function hit(hands) {
 // STAY
 function stay() {
   turn = "Comp";
-  while(sumUp(dealer) < 17) {
+  //DEALER HITS ON UNTIL 17 AND ON SOFT 17
+  while((sumUp(dealer) < 17) || (dealer.length === 2 && dealer.join().indexOf("A") != -1))
+    {
     hit(dealer);
   }
   // checkBust(dealer);
