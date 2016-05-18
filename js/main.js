@@ -8,9 +8,7 @@ var deck = [
 var player1 = {
               hand: [],
               startChips: 100
-             };
-
-var player  = player1.hand;
+              };
 
 var dealer = [];
 
@@ -35,8 +33,18 @@ deck.forEach(function(card) {
 });
 
 
-//GAME START STATE
+
+// GAME START
 function start() {
+
+};
+
+
+
+
+//DEAL
+function deal() {
+  clearHand();
   turn = "P1";
   gameOutcome = "playing";
   playingDeck = _.shuffle(deck);
@@ -48,6 +56,14 @@ function start() {
     }
   };
 
+  // AUTOMATIC WINS
+  if(
+    ((sumUp(player1.hand) === 21 && sumUp(dealer) === 21) && (dealer[0] !== "A")) ||
+    ((sumUp(player1.hand) !== 21 && sumUp(dealer) === 21))                        ||
+    (sumUp(player1.hand) === 21)
+    ) {
+      checkWin();
+    }
 
 };
 
@@ -62,21 +78,27 @@ function sumUp(arr) {
 }
 //CHECK FOR BUST
 function checkBust(pd) {
-  return sumUp(pd) > 21;
+  return (sumUp(pd) > 21);
   // if(sumUp(pd) > 21) {
   // gameOutcome = "Bust";
   // clearHand();
   // }
 }
 
-//HIT
+// HIT
 function hit(hands) {
   hands.push(playingDeck.shift());
+  if(sumUp(player1.hand) > 21) {
+    checkWin();
+  } else if (sumUp(player1.hand) === 21) {
+    stay();
+  }
   // checkBust(hands);
 }
 
 // STAY
 function stay() {
+  turn = "Comp";
   while(sumUp(dealer) < 17) {
     hit(dealer);
   }
@@ -87,22 +109,28 @@ function stay() {
 
 // check for winner
 function checkWin() {
-  if (checkBust(player)) {
-    gameOutcome = "Dealer";
+  if (checkBust(player1.hand)) {
+    gameOutcome = "Dealer Wins";
   } else if (checkBust(dealer)) {
-    gameOutcome = "Player";
+    gameOutcome = "Player Wins";
+  } else if (sumUp(dealer) > sumUp(player1.hand)) {
+    gameOutcome = "Dealer Wins";
+  } else if (sumUp(dealer) < sumUp(player1.hand)) {
+    gameOutcome = "Player Wins";
+  } else if (sumUp(dealer) === sumUp(player1.hand)) {
+    gameOutcome = 'Push';
   }
 }
 
-// CLEAR PLAYER HAND
+// CLEAR HANDS RESET
 function clearHand() {
   player1.hand = [];
-  dealer.hand = [];
+  dealer = [];
 }
 
 // HELPER....
-function renderGame() {;
-console.log("Player hand: " + player);
+function renderGame() {
+console.log("Player hand: " + player1.hand);
 console.log("Dealer hand: " + dealer);
 console.log("Turn: " + turn);
 console.log("Game Outcome: " + gameOutcome);
