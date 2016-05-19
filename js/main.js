@@ -19,7 +19,8 @@ deck.forEach(function(card) {
 var player1 = {
   hand: [],
   chips: 0,
-  dblDown: false
+  dblDown: false,
+  blackJack: false
 };
 
 var dealer = [];
@@ -75,20 +76,23 @@ function deal() {
 
   // AUTOMATIC WINS
   if (sumUp(player1.hand) === 21 && (sumUp(dealer) === 21 && dealer[0] !== "A")) {
-        gameStatus = "BLACKJACK"
-        player1.chips += wager*1.5;
-        turn = "";
+        blackJack();
   } else if (sumUp(player1.hand) === 21 && sumUp(dealer) !== 21) {
-        gameStatus = "BLACKJACK"
-        player1.chips += wager*1.5;
-        turn = "";
+        blackJack();
   } else if (sumUp(player1.hand) !== 21 && sumUp(dealer) === 21) {
         checkWin();
-        turn = "";
   }
-
 };
 
+
+//CHECK FOR AUTOMATIC BLACKJACK
+function blackJack() {
+  player1.blackJack = true;
+  checkWin();
+
+  //After winning return back blackjack back to false
+  player1.blackJack = false;
+}
 
 // ADD UP VALUES
 function sumUp(hand) {
@@ -161,7 +165,11 @@ function checkWin() {
   if (player1.dblDown) {
     wager = wager * 2;
   }
-  if (checkBust(player1.hand)) {
+
+  if(player1.blackJack) {
+    gameStatus = "BlackJack";
+    player1.chips += wager * 1.5;
+  } else if (checkBust(player1.hand)) {
     gameStatus = "Dealer Wins";
     player1.chips -= wager;
   } else if (checkBust(dealer)) {
