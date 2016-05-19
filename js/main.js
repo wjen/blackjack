@@ -28,7 +28,7 @@ var playingDeck = null;
 
 var wager;
 
-var gameOutcome;
+var gameStatus;
 
 var turn;
 
@@ -38,17 +38,21 @@ function start() {
   wager = 0;
   player1.chips = 500;
   clearHands();
-  gameOutcome = "";
+  gameStatus = "";
+  turn = "";
 };
 
 
 //BET FUNCTION
 function bet(amount) {
   if (amount) {
-      if(player1.chips >= amount) {
+      if(player1.chips > amount) {
         wager = amount;
+      } else if (player1.chips <= amount && player1.chips != 0) {
+        console.log("Degree All in Moment!");
+        wager = player1.chips;
       } else {
-        console.log("you don't enough have chips")
+        wager = 0;
       }
   } else {
     wager = 0;
@@ -59,7 +63,7 @@ function bet(amount) {
 function deal() {
   clearHands();
   turn = "P1";
-  gameOutcome = "playing";
+  gameStatus = "playing";
   playingDeck = _.shuffle(deck);
   for(var i = 0; i < 4; i++) {
     if ( i % 2 === 0) {
@@ -71,13 +75,16 @@ function deal() {
 
   // AUTOMATIC WINS
   if (sumUp(player1.hand) === 21 && (sumUp(dealer) === 21 && dealer[0] !== "A")) {
-        gameOutcome = "BLACKJACK"
+        gameStatus = "BLACKJACK"
         player1.chips += wager*1.5;
+        turn = "";
   } else if (sumUp(player1.hand) === 21 && sumUp(dealer) !== 21) {
-        gameOutcome = "BLACKJACK"
+        gameStatus = "BLACKJACK"
         player1.chips += wager*1.5;
+        turn = "";
   } else if (sumUp(player1.hand) !== 21 && sumUp(dealer) === 21) {
         checkWin();
+        turn = "";
   }
 
 };
@@ -105,32 +112,37 @@ function sumUp(hand) {
 
 //DOUBLE DOWN
 function dblDown() {
-  if((player1.chips > (wager * 2)) && (turn = "P1")) {
-    player1.dblDown = true;
-    hit(player1.hand);
-    stay();
+  if (turn === "P1" && wager !== 0) {
+      if(player1.chips > (wager * 2)) {
+        player1.dblDown = true;
+        hit(player1.hand);
 
-    // After doing the win logic (inside stay).
-    player1.dblDown = false;
-  } else {
-    console.log("You don't have enough chips");
+        // After hitting automatically only once.
+        player1.dblDown = false;
+      } else {
+        console.log("You don't have enough chips");
+      }
   }
 }
 
 // HIT
 function hit(hands) {
-  hands.push(playingDeck.shift());
-  if(sumUp(player1.hand) > 21) {
-    checkWin();
-  } else if (sumUp(player1.hand) === 21) {
-    stay();
+  if(gameStatus === "playing") {
+    hands.push(playingDeck.shift());
+      if (turn === "P1") {
+        if(sumUp(player1.hand) > 21) {
+          checkWin();
+        } else if (sumUp(player1.hand) === 21 || player1.dblDown) {
+          stay();
+        }
+      }
   }
 }
 
 // STAY
 function stay() {
-  turn = "Comp";
-  //DEALER HITS ON UNTIL 17 AND ON SOFT 17
+  turn = "CPU";
+  //DEALER HITS UNTIL 17 AND ON SOFT 17
   while(
     (sumUp(dealer) < 17) ||((dealer.length === 2) && (dealer.join().indexOf(6) != -1) && (dealer.join().indexOf("A") != -1))
   ) {
@@ -150,24 +162,25 @@ function checkWin() {
     wager = wager * 2;
   }
   if (checkBust(player1.hand)) {
-    gameOutcome = "Dealer Wins";
+    gameStatus = "Dealer Wins";
     player1.chips -= wager;
   } else if (checkBust(dealer)) {
-    gameOutcome = "Player Wins";
+    gameStatus = "Player Wins";
     player1.chips += wager;
   } else if (sumUp(dealer) > sumUp(player1.hand)) {
-    gameOutcome = "Dealer Wins";
+    gameStatus = "Dealer Wins";
     player1.chips -= wager;
   } else if (sumUp(dealer) < sumUp(player1.hand)) {
-    gameOutcome = "Player Wins";
+    gameStatus = "Player Wins";
     player1.chips += wager;
   } else if (sumUp(dealer) === sumUp(player1.hand)) {
-    gameOutcome = 'Push';
+    gameStatus = 'Push';
   }
   // After outcome and payout, return wager back to default original wager
   if (player1.dblDown) {
     wager = wager / 2;
   }
+  turn = "";
 }
 
 // CLEAR HANDS RESET
@@ -181,7 +194,7 @@ function renderGame() {
   console.log("Player hand: " + player1.hand);
   console.log("Dealer hand: " + dealer);
   console.log("Turn: " + turn);
-  console.log("Game Outcome: " + gameOutcome);
+  console.log("Game Status: " + gameStatus);
   console.log("Chips: " + player1.chips);
   console.log("Wager: " + wager);
   console.log("DoubleDown: " + player1.dblDown)
