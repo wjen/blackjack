@@ -134,7 +134,7 @@ function sumUp(hand) {
 
 //DOUBLE DOWN
 function dblDown() {
-  if (turn === "P1" && wager !== 0) {
+  if (turn === "P1") {
       if(player1.chips > (wager * 2)) {
         player1.dblDown = true;
         hit(player1.hand);
@@ -149,16 +149,13 @@ function dblDown() {
 
 // HIT
 function hit(hands) {
-  if(gameStatus === "playing") {
-    hands.push(playingDeck.shift());
-      if (turn === "P1") {
-        if(sumUp(player1.hand) > 21) {
-          checkWin();
-        } else if (sumUp(player1.hand) === 21 || player1.dblDown) {
-          stay();
-        }
-      }
-  }
+  hands.push(playingDeck.shift());
+    if(sumUp(player1.hand) > 21) {
+      checkWin();
+    } else if (sumUp(player1.hand) === 21 || player1.dblDown) {
+      stay();
+    }
+  renderGame();
 }
 
 // STAY
@@ -233,19 +230,21 @@ function renderGame() {
     $('#player' + idx).addClass(card).show();
   });
   dealer.forEach(function(card, idx) {
-    if (idx === 0 && gameStatus === "playing") {
+    if (idx === 0 && turn === "P1") {
       $('#dealer0').addClass('back-red').show();
     } else {
       $('#dealer' + idx).removeClass('back-red').addClass(card).show();
     }
   });
 
+  // $( "#foo" ).slideUp( 300 ).delay( 800 ).fadeIn( 400 );
+
   //DISABLES BUTTONS AND RENDERS TEXT
   $('#bankroll').text(player1.chips);
   $('#wager').text(wager);
   $('#deal-btn').prop("disabled", (wager === 0));
   $('#dDown-btn').prop("disabled", (player1.chips < wager *2));
-
+  $('#who-wins').text(gameStatus)
 
 
   console.log("Player hand: " + player1.hand);
