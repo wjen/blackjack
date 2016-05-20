@@ -24,15 +24,14 @@ var player1 = {
 };
 
 var dealer = [];
-
 var playingDeck = null;
-
 var wager;
-
 var gameStatus;
-
 var turn;
 
+$('.bet-btn').on('click', bet);
+$('#deal-btn').on('click', deal);
+$('.action-btn').on('click', doAction);
 
 // GAME START
 function start() {
@@ -41,23 +40,41 @@ function start() {
   clearHands();
   gameStatus = "";
   turn = "";
+  renderGame();
+
 };
 
+function doAction() {
+  var text = $(this).text();
+  switch (text) {
+    case 'DD':
+      dblDown();
+      break;
+    case 'Stay':
+      stay();
+      break;
+    case 'Hit':
+      hit(player1.hand);
+  }
+}
 
 //BET FUNCTION
-function bet(amount) {
-  if (amount) {
-      if(player1.chips > amount) {
-        wager = amount;
-      } else if (player1.chips <= amount && player1.chips != 0) {
-        console.log("Degree All in Moment!");
-        wager = player1.chips;
-      } else {
-        wager = 0;
-      }
-  } else {
+function bet() {
+  var text = $(this).text();
+  if (text === 'clear') {
     wager = 0;
+  } else {
+    var amount = parseInt(text.substring(1));
+    if(player1.chips > (wager + amount)) {
+      wager += amount;
+    } else if ((player1.chips === wager + amount) && amount !== 0) {
+      wager += amount;
+      alert("Degree All In Moment");
+    } else {
+      alert("You don't have enough cash!");
+    }
   }
+  renderGame();
 }
 
 //DEAL
@@ -82,6 +99,7 @@ function deal() {
   } else if (sumUp(player1.hand) !== 21 && sumUp(dealer) === 21) {
         checkWin();
   }
+  renderGame();
 };
 
 
@@ -153,7 +171,7 @@ function stay() {
     hit(dealer);
   }
   checkWin();
-}
+  }
 
 //CHECK FOR BUST
 function checkBust(hand) {
@@ -188,17 +206,48 @@ function checkWin() {
   if (player1.dblDown) {
     wager = wager / 2;
   }
+  if (wager > player1.chips) wager = 0;
   turn = "";
+  renderGame();
 }
 
 // CLEAR HANDS RESET
 function clearHands() {
   player1.hand = [];
   dealer = [];
+  for (var i = 0; i < 6; i++) {
+    $('#player' + i).removeClass().addClass('card').hide();
+    $('#dealer' + i).removeClass().addClass('card').hide();
+  }
 }
 
 // HELPER
 function renderGame() {
+
+//HIDES BUTTONS WHEN NECESSARY
+  (gameStatus === "playing") ? $('.action-btn').show() : $('.action-btn').hide();
+  (gameStatus === "playing") ? $('.bet-btn').hide() : $('.bet-btn').show();
+  (gameStatus === "playing") ? $('#deal-btn').hide() : $('#deal-btn').show();
+
+  player1.hand.forEach(function(card, idx) {
+    $('#player' + idx).addClass(card).show();
+  });
+  dealer.forEach(function(card, idx) {
+    if (idx === 0 && gameStatus === "playing") {
+      $('#dealer0').addClass('back-red').show();
+    } else {
+      $('#dealer' + idx).removeClass('back-red').addClass(card).show();
+    }
+  });
+
+  //DISABLES BUTTONS AND RENDERS TEXT
+  $('#bankroll').text(player1.chips);
+  $('#wager').text(wager);
+  $('#deal-btn').prop("disabled", (wager === 0));
+  $('#dDown-btn').prop("disabled", (player1.chips < wager *2));
+
+
+
   console.log("Player hand: " + player1.hand);
   console.log("Dealer hand: " + dealer);
   console.log("Turn: " + turn);
@@ -207,3 +256,5 @@ function renderGame() {
   console.log("Wager: " + wager);
   console.log("DoubleDown: " + player1.dblDown)
 }
+
+start();

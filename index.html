@@ -15,22 +15,51 @@
   <div class="board-container">
     <table class="board">
       <tbody>
-        <tr>
-          <td class="card back-red"></td>
-          <td class="card back-red"></td>
+        <tr class="card-row">
+          <td class="card" id="dealer0" style="display: none"></td>
+          <td class="card" id="dealer1" style="display: none"></td>
+          <td class="card" id="dealer2" style="display: none"></td>
+          <td class="card" id="dealer3" style="display: none"></td>
+          <td class="card" id="dealer4" style="display: none"></td>
+          <td class="card" id="dealer5" style="display: none"></td>
+          <td class="card" id="dealer6" style="display: none"></td>
 
         </tr>
         <tr>
-          <td class="d09 card"></td>
-          <td></td>
+          <td id="stats-cell">
+            <div id="player-stats">
+              <p>Bankroll: <span id="bankroll"></span></p>
+              <p>Wager: <span id="wager"></span></p>
+            </div>
+          </td>
+        </tr>
+        <tr class="card-row">
+          <td class="card" id="player0" style="display: none"></td>
+          <td class="card" id="player1" style="display: none"></td>
+          <td class="card" id="player2" style="display: none"></td>
+          <td class="card" id="player3" style="display: none"></td>
+          <td class="card" id="player4" style="display: none"></td>
+          <td class="card" id="player5" style="display: none"></td>
+          <td class="card" id="player6" style="display: none"></td>
         </tr>
       </tbody>
     </table>
-    <div class="info-container">
-
-
+    <div class="options-container">
+      <button class="action-btn btn">Stay</button>
+      <button class="action-btn btn">Hit</button>
+      <button class="action-btn btn" id="dDown-btn">DD</button>
+      <button class="btn" id="deal-btn" >Deal</button>
+      <button class="bet-btn btn" amount="5">$5</button>
+      <button class="bet-btn btn" amount="10">$10</button>
+      <button class="bet-btn btn" amount="25">$25</button>
+      <button class="bet-btn btn" amount="100">$100</button>
+      <button class="bet-btn btn">clear</button>
     </div>
-    <button id="start">Start</button>
+    <div>
+      <div id="win-box">
+        <p>Winner: <span id="who-wins"></span></p>
+      </div>
+    </div>
   </div>
 
 
