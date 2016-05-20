@@ -112,3 +112,9 @@ h1 {
   color: white;
 }
 
+#degree {
+  position: fixed;
+  top: 25%;
+  right: 7%;
+}
+

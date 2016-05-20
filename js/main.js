@@ -32,7 +32,7 @@ var turn;
 $('.bet-btn').on('click', bet);
 $('#deal-btn').on('click', deal);
 $('.action-btn').on('click', doAction);
-
+$('#degree').hide();
 // GAME START
 function start() {
   wager = 0;
@@ -70,6 +70,8 @@ function bet() {
     } else if ((player1.chips === wager + amount) && amount !== 0) {
       wager += amount;
       alert("Degree All In Moment");
+      $('#degree').fadeIn(1000).fadeOut(1000);
+
     } else {
       alert("You don't have enough cash!");
     }
