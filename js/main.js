@@ -32,7 +32,7 @@ var turn;
 $('.bet-btn').on('click', bet);
 $('#deal-btn').on('click', deal);
 $('.action-btn').on('click', doAction);
-$('#degree').hide();
+
 // GAME START
 function start() {
   wager = 0;
@@ -70,8 +70,6 @@ function bet() {
     } else if ((player1.chips === wager + amount) && amount !== 0) {
       wager += amount;
       alert("Degree All In Moment");
-      $('#degree').fadeIn(1000).fadeOut(1000);
-
     } else {
       alert("You don't have enough cash!");
     }
@@ -136,7 +134,7 @@ function sumUp(hand) {
 
 //DOUBLE DOWN
 function dblDown() {
-  if (turn === "P1") {
+  if (turn === "P1" && wager !== 0) {
       if(player1.chips > (wager * 2)) {
         player1.dblDown = true;
         hit(player1.hand);
@@ -151,12 +149,16 @@ function dblDown() {
 
 // HIT
 function hit(hands) {
-  hands.push(playingDeck.shift());
-    if(sumUp(player1.hand) > 21) {
-      checkWin();
-    } else if (sumUp(player1.hand) === 21 || player1.dblDown) {
-      stay();
-    }
+  if(gameStatus === "playing") {
+    hands.push(playingDeck.shift());
+      if (turn === "P1") {
+        if(sumUp(player1.hand) > 21) {
+          checkWin();
+        } else if (sumUp(player1.hand) === 21 || player1.dblDown) {
+          stay();
+        }
+      }
+  }
   renderGame();
 }
 
@@ -238,8 +240,6 @@ function renderGame() {
       $('#dealer' + idx).removeClass('back-red').addClass(card).show();
     }
   });
-
-  // $( "#foo" ).slideUp( 300 ).delay( 800 ).fadeIn( 400 );
 
   //DISABLES BUTTONS AND RENDERS TEXT
   $('#bankroll').text(player1.chips);
