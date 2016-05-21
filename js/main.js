@@ -135,7 +135,7 @@ function sumUp(hand) {
 //DOUBLE DOWN
 function dblDown() {
   if (turn === "P1" && wager !== 0) {
-      if(player1.chips > (wager * 2)) {
+      if(player1.chips >= (wager * 2)) {
         player1.dblDown = true;
         hit(player1.hand);
 
@@ -246,7 +246,10 @@ function renderGame() {
   $('#wager').text(wager);
   $('#deal-btn').prop("disabled", (wager === 0));
   $('#dDown-btn').prop("disabled", (player1.chips < wager *2));
-  $('#who-wins').text(gameStatus)
+  $('#dDown-btn').prop("disabled", (player1.hand.length > 2));
+
+  $('#who-wins').text(gameStatus);
+
 
 
   console.log("Player hand: " + player1.hand);

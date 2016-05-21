@@ -1,5 +1,4 @@
-#BlackJack
-
+#blackjack
 Welcome to the *BlackJack* table. 
 
 ![Make it rain](https://downtownoregoncity.org/wp-content/uploads/2015/12/Winning-money.png)
