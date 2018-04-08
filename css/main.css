@@ -1,5 +1,5 @@
 html {
-  background: url('https://mxg.cdnbf.net/mexchangeblackjack/turbo/assets/gameView/tableBackground.png?v1.26-235') no-repeat center fixed;
+  background: url('../dist/images/blackjack-table.png') no-repeat center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
