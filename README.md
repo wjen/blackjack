@@ -1,8 +1,5 @@
-#blackjack
-Welcome to the *BlackJack* table. 
+##Welcome to the ***BlackJack*** table. 
 
-![Make it rain](https://downtownoregoncity.org/wp-content/uploads/2015/12/Winning-money.png)
- 
 ###Game Rules 
 ----------
 1. **Goal of the Game**
@@ -59,6 +56,3 @@ If you start to feel any of these symptoms:
 ##### Help is available 24/7 and is 100% confidential.
 [National Problem Gamling Helpline](http://www.ncpgambling.org/help-treatment/national-helpline-1-800-522-4700/)
 
-
-> > ###"It's only a gambling problem if you're losing."
-> 		- wise person
